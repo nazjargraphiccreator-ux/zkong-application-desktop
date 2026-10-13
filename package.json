@@ -1,0 +1,30 @@
+{
+  "name": "zkong-desktop-application",
+  "productName": "Zkong Desktop Application - Unofficial",
+  "version": "1.0.0",
+  "description": "Zkong Desktop Application - Unofficial Desktop Platform by Nazjar Dev",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package-win": "electron-packager . \"Zkong-Desktop-Application\" --platform=win32 --arch=x64 --icon=icon.ico --out=dist --overwrite --prune=true",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "zkong",
+    "esl",
+    "electronic-shelf-labels",
+    "desktop",
+    "windows",
+    "iot"
+  ],
+  "author": "Nazjar Dev",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "electron": "^44.7.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron-packager": "^17.1.2"
+  }
+}

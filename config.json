@@ -1,0 +1,15 @@
+{
+  "port": 5050,
+  "cloud_url": "http://esl-eu.zkong.com:9999",
+  "cloud_user": "",
+  "cloud_pass": "",
+  "cloud_merchant_id": "",
+  "mw_store_id": "",
+  "auto_detect_liquids": true,
+  "vat_percent": 19,
+  "default_template_cat": "default",
+  "default_template_type": "2.9",
+  "mw_url": "http://127.0.0.1:8003",
+  "mw_user": "admin",
+  "mw_pass": ""
+}

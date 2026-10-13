@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zkong Desktop Application - Unofficial • by Nazjar Dev</title>
+    
+    <!-- Modern Typography: Outfit + Plus Jakarta Sans + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js 4.4.1 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+    <!-- Ambient 2026 Lighting Glow Mesh Orbs (GPU Accelerated) -->
+    <div class="ambient-mesh-glow" aria-hidden="true">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <!-- Toast Notifications Stack -->
+    <div id="toast-container"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <div class="brand-logo-wrap">
+                    <img src="/logo.png" alt="Zkong Logo" class="brand-logo-img">
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">Zkong Desktop</span>
+                    <span class="brand-badge">Unofficial • by Nazjar Dev</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard & Grafice</span>
+                </button>
+                <button class="nav-item" data-tab="catalog">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Catalog Produse</span>
+                    <span class="nav-pill" id="badge-total-count">...</span>
+                </button>
+                <button class="nav-item" data-tab="upload">
+                    <span class="nav-icon">📁</span>
+                    <span class="nav-label">Live Upload & Sync</span>
+                    <span class="nav-pill highlight">LIVE</span>
+                </button>
+                <button class="nav-item" data-tab="litraj">
+                    <span class="nav-icon">💧</span>
+                    <span class="nav-label">Motor Preț/Litru & Kg</span>
+                    <span class="nav-pill highlight" id="badge-liquid-count">...</span>
+                </button>
+                <button class="nav-item" data-tab="active-tags">
+                    <span class="nav-icon">🏷️</span>
+                    <span class="nav-label">Etichete Active ESL</span>
+                    <span class="nav-pill highlight" id="badge-active-tags-count">334</span>
+                </button>
+                <button class="nav-item" data-tab="calculator">
+                    <span class="nav-icon">🧮</span>
+                    <span class="nav-label">Calculator Inteligent</span>
+                    <span class="nav-pill highlight">LIVE</span>
+                </button>
+                <button class="nav-item" data-tab="esl-studio">
+                    <span class="nav-icon">🏷️</span>
+                    <span class="nav-label">Simulator ESL 2.9"</span>
+                </button>
+                <button class="nav-item" data-tab="sync">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-label">Sincronizare ZKONG</span>
+                </button>
+                <button class="nav-item" data-tab="backups">
+                    <span class="nav-icon">💾</span>
+                    <span class="nav-label">Istoric & Backups</span>
+                </button>
+                <button class="nav-item" data-tab="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Setări & API</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-status-box">
+                <div class="status-header">
+                    <span class="status-label">Middleware Local</span>
+                    <span class="status-indicator online" id="mw-status-indicator">
+                        <span class="dot"></span> ONLINE (8003)
+                    </span>
+                </div>
+                <div class="status-header" style="margin-top: 8px;">
+                    <span class="status-label">ZKONG Cloud EU</span>
+                    <span class="status-indicator ready" id="cloud-status-indicator">
+                        <span class="dot"></span> CONECTAT (9999)
+                    </span>
+                </div>
+                <button class="btn-sidebar-sync" id="btn-quick-sync-sidebar">
+                    <span>⚡ Sincronizează Acum</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Topbar Header -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 class="page-title" id="page-title">Dashboard & Prezentare Generală</h1>
+                    <span class="page-subtitle" id="page-subtitle">Sincronizare în timp real etichete electronice de raft ZKONG ESL • Template 2.9</span>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" id="topbar-btn-create-product">
+                        <span class="icon">➕</span>
+                        <span data-i18n="btnNewProduct">New Product</span>
+                    </button>
+                    <button class="btn btn-outline" id="topbar-btn-bind-tag" style="border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
+                        <span class="icon">🏷️</span>
+                        <span data-i18n="btnBindESL">Bind ESL</span>
+                    </button>
+                    <button class="btn btn-outline" id="topbar-btn-pull-cloud" style="border-color: rgba(16, 185, 129, 0.5); color: #10b981;">
+                        <span class="icon">🔄</span>
+                        <span data-i18n="btnSyncCloud">Cloud Sync</span>
+                    </button>
+                    <button class="btn btn-secondary" id="topbar-btn-upload">
+                        <span class="icon">📁</span>
+                        <span data-i18n="btnUploadFile">Upload File</span>
+                    </button>
+                    <button class="btn btn-secondary" id="btn-export-excel">
+                        <span class="icon">📥</span>
+                        <span data-i18n="btnExportExcel">Export Excel</span>
+                    </button>
+                    <button class="btn btn-primary" id="btn-push-all">
+                        <span class="icon">⚡</span>
+                        <span data-i18n="btnPushAll">Push to Tags</span>
+                    </button>
+                    <!-- Language Selector Toggle -->
+                    <button type="button" class="btn-lang-toggle" id="btn-lang-toggle" title="Switch Language (EN / RO)">
+                        <span class="icon">🌐</span>
+                        <span id="lang-toggle-text">EN</span>
+                    </button>
+                    <!-- User Session Profile Chip -->
+                    <div class="user-session-chip" id="user-session-chip" title="Active ZKong Session">
+                        <span class="user-avatar-badge">👤</span>
+                        <div class="user-info-text">
+                            <span class="user-name-display" id="user-name-display">Guest</span>
+                            <span class="user-cloud-display" id="user-cloud-display">ZKong Cloud</span>
+                        </div>
+                        <button type="button" class="btn-account-switch" id="btn-account-switch" title="Switch Account / Logout">
+                            <span>⇄</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 2026 Executive Telemetry HUD Radar Bar (Doppelrand Architecture) -->
+            <div class="hud-telemetry-container">
+                <div class="hud-telemetry-bar glass">
+                    <div class="hud-item hud-brand-pill">
+                        <span class="hud-pulse-dot green"></span>
+                        <span class="hud-label">ZKONG EU</span>
+                        <span class="hud-val" id="hud-ping-val">42ms</span>
+                    </div>
+                    <div class="hud-divider"></div>
+                    <div class="hud-item">
+                        <span class="hud-icon">🏷️</span>
+                        <span class="hud-label">Etichete:</span>
+                        <span class="hud-val highlight" id="hud-tags-val">334 / 644</span>
+                    </div>
+                    <div class="hud-divider"></div>
+                    <div class="hud-item">
+                        <span class="hud-icon">🔋</span>
+                        <span class="hud-label">Baterie:</span>
+                        <span class="hud-val green" id="hud-battery-val">98.4% OK</span>
+                    </div>
+                    <div class="hud-divider"></div>
+                    <div class="hud-item">
+                        <span class="hud-icon">✨</span>
+                        <span class="hud-label">Diacritice:</span>
+                        <span class="hud-val purple" id="hud-grammar-val">364 Corectate</span>
+                    </div>
+                    <div class="hud-divider"></div>
+                    <div class="hud-item">
+                        <span class="hud-icon">💾</span>
+                        <span class="hud-label">Excel:</span>
+                        <span class="hud-val" id="hud-sync-val">Desktop Sincronizat</span>
+                    </div>
+                    <div class="hud-divider"></div>
+                    <div class="hud-item" id="hud-watcher-item" title="Monitorizare ZKong Cloud în timp real (la fiecare 30 secunde)" style="cursor: pointer;">
+                        <span class="hud-icon">📡</span>
+                        <span class="hud-label">Live Watcher:</span>
+                        <span class="hud-val green" id="hud-watcher-val">Activ (30s)</span>
+                    </div>
+                    <div class="hud-actions-right">
+                        <button type="button" class="hud-quick-btn" id="hud-btn-cmd-palette" title="Deschide Căutarea Rapidă (Ctrl + K)">
+                            <span class="hud-kbd">Ctrl + K</span>
+                            <span>Căutare</span>
+                        </button>
+                        <button type="button" class="hud-quick-btn highlight" id="hud-btn-quick-sync" title="Sincronizare Live din ZKong Cloud">
+                            <span class="hud-spin-icon">⚡</span>
+                            <span>Live Sync</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-scrollable">
+                <!-- ================= TAB: DASHBOARD & STATISTICI REALE ================= -->
+                <section class="tab-pane active" id="tab-dashboard">
+                    <!-- KPI Cards Grid -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card glass glow-blue">
+                            <div class="kpi-icon-wrap blue">📦</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Total Produse Catalog</span>
+                                <h3 class="kpi-value" id="kpi-total">643</h3>
+                                <span class="kpi-sub">Sincronizate din Single_ana.xlsx</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card glass glow-cyan">
+                            <div class="kpi-icon-wrap cyan">💧</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Soluții Lichide (/Litru)</span>
+                                <h3 class="kpi-value" id="kpi-liquids">307</h3>
+                                <span class="kpi-sub" id="kpi-avg-ppl">Calcul automat HG 947/2000</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card glass glow-amber">
+                            <div class="kpi-icon-wrap" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">⚖️</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Soluții Solide (/Kg)</span>
+                                <h3 class="kpi-value" id="kpi-solids">35</h3>
+                                <span class="kpi-sub" id="kpi-avg-ppk">Calculat automat în custFeature1</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card glass glow-emerald">
+                            <div class="kpi-icon-wrap emerald">🏷️</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Status ZKONG Cloud EU</span>
+                                <h3 class="kpi-value online-text" id="kpi-cloud-state">CONECTAT</h3>
+                                <span class="kpi-sub">Magazin ID: 1749214564196</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2026 Real-Time Charts Grid (Chart.js) -->
+                    <div class="charts-grid">
+                        <div class="chart-card glass">
+                            <div class="chart-card-header">
+                                <div>
+                                    <h4 class="chart-title">📊 Distribuție Soluții & Produse</h4>
+                                    <span class="chart-subtitle">Ponderea soluțiilor lichide, la kg și a echipamentelor hardware</span>
+                                </div>
+                                <span class="badge-pill" id="chart-badge-solutions">Live Catalog</span>
+                            </div>
+                            <div class="chart-canvas-wrap">
+                                <canvas id="chart-solutions-distribution"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card glass">
+                            <div class="chart-card-header">
+                                <div>
+                                    <h4 class="chart-title">🏷️ Histogramă Categorii de Preț</h4>
+                                    <span class="chart-subtitle">Repartiția numărului de produse pe intervale de preț (Lei)</span>
+                                </div>
+                                <span class="badge-pill" id="chart-badge-prices">643 Articole</span>
+                            </div>
+                            <div class="chart-canvas-wrap">
+                                <canvas id="chart-price-tiers"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Smart Unit Price Calculator (HG 947/2000) -->
+                    <div class="card glass glow-cyan" style="margin-top: 24px;">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 24px;">🧮</span>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 16px;">Calculator Rapid Preț per Litru & Kg (Live HG 947/2000)</h3>
+                                    <span style="font-size: 12px; color: var(--text-secondary);">Scrie direct liber (ex: "160ron 250ml", "235ron 480ml", "135ron/6kg") sau completează câmpurile</span>
+                                </div>
+                            </div>
+                            <span class="badge-pill highlight">Calcul Instantaneu</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-calc-grid">
+                                <div class="quick-calc-inputs">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label style="font-size: 12px; font-weight: 600; color: #94a3b8;">Input Inteligent (Scrie liber text sau preț/volum):</label>
+                                        <div style="position: relative;">
+                                            <input type="text" id="quick-calc-raw" class="form-input" placeholder="ex: 160ron 250ml sau 75ron/5l sau 135ron/6kg" style="font-family: 'JetBrains Mono', monospace; font-size: 14px; padding-right: 95px;">
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-quick-calc-parse" style="position: absolute; right: 4px; top: 4px; bottom: 4px; padding: 0 12px;">Calculează</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group-2" style="margin-bottom: 0;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 11px; color: #94a3b8;">Preț Produs (Lei):</label>
+                                            <input type="number" step="0.01" id="quick-calc-price" class="form-input" placeholder="ex: 160">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 11px; color: #94a3b8;">Volum / Greutate (ex: 250ml, 5L, 6kg):</label>
+                                            <input type="text" id="quick-calc-spec" class="form-input" placeholder="ex: 250ml">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="quick-calc-result-box">
+                                    <span class="calc-res-label">PREȚ UNITAR ZKONG (custFeature1):</span>
+                                    <div class="calc-res-value" id="quick-calc-display">-- Lei / Litru</div>
+                                    <div class="calc-res-formula" id="quick-calc-formula">Introdu prețul și volumul pentru calcul automat</div>
+                                    <div class="calc-res-actions">
+                                        <button class="btn btn-sm btn-outline" id="btn-copy-calc-result">📋 Copiază Textul</button>
+                                        <button class="btn btn-sm btn-secondary" id="btn-search-catalog-from-calc">🔍 Caută în Catalog</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Banner & Quick Engine -->
+                    <div class="banner-card glass" style="margin-top: 24px;">
+                        <div class="banner-content">
+                            <div class="banner-tag">🚀 Motor Automat Litraj & Prețuri 2026</div>
+                            <h2>Calculează automat Prețul per Litru sau per Kg pentru tot catalogul</h2>
+                            <p>Algoritmul inteligent detectează volumele (5L, 1L, 750ml, etc.) și greutățile (1kg, 5kg, 20kg), calculează prețul conform HG 947/2000 și populează automat câmpul <code>custFeature1</code> pentru șablonul ZKong <code>2.9</code>.</p>
+                            <div class="banner-buttons">
+                                <button class="btn btn-primary btn-large" id="btn-calc-all-ppl">
+                                    <span>💧 Rulează Calculul Automat (/Litru & /Kg)</span>
+                                </button>
+                                <button class="btn btn-outline" id="btn-open-preview-hero">
+                                    <span>👁️ Vezi Previzualizare Etichetă ESL</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="banner-illustration">
+                            <div class="mini-tag-badge">
+                                <div class="mini-tag-header">ZKONG • ESL Product</div>
+                                <div class="mini-tag-price">67.00 <span class="lei">lei</span></div>
+                                <div class="mini-tag-ppl">💧 13.40 Lei / Litru</div>
+                                <div class="mini-tag-barcode">||| ||||||| ||||| ||</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Source Info & Quick Actions -->
+                    <div class="dashboard-grid-2" style="margin-top: 24px;">
+                        <div class="card glass">
+                            <div class="card-header">
+                                <h3>📂 Fișiere Sursă & Conexiuni Sistem</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="source-item">
+                                    <span class="source-label">Fișier Principal:</span>
+                                    <code class="source-code" id="lbl-excel-path">Single_ana.xlsx</code>
+                                </div>
+                                <div class="source-item">
+                                    <span class="source-label">Copie Desktop:</span>
+                                    <code class="source-code">C:\Users\Nazjar\Desktop\Single_ana.xlsx</code>
+                                </div>
+                                <div class="source-item">
+                                    <span class="source-label">Șablon ESL Configurat:</span>
+                                    <span class="badge-pill" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Template 2.9 (attrName: 2.9)</span>
+                                </div>
+                                <div class="source-item">
+                                    <span class="source-label">Camp ZKong Preț Unitar:</span>
+                                    <span class="badge-pill">custFeature1 = X.XX Lei / Litru | X.XX Lei / Kg</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <div class="card-header">
+                                <h3>⚡ Acțiuni Rapide de Sincronizare</h3>
+                            </div>
+                            <div class="card-body actions-stack">
+                                <button class="btn btn-glass" id="dash-btn-push-cloud">
+                                    <span>1. Trimite Toate Prețurile în ZKONG Cloud EU</span>
+                                </button>
+                                <button class="btn btn-glass" id="dash-btn-push-mw">
+                                    <span>2. Actualizează Fișierul Excel Local pentru Middleware</span>
+                                </button>
+                                <button class="btn btn-glass" id="dash-btn-export">
+                                    <span>3. Descarcă Fișierul Excel Complet</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: LIVE UPLOAD & IMPORT ================= -->
+                <section class="tab-pane" id="tab-upload">
+                    <div class="upload-container">
+                        <!-- Dropzone Area -->
+                        <div class="dropzone-card" id="dropzone-area">
+                            <input type="file" id="file-input-hidden" accept=".xlsx,.xls,.csv" style="display: none;">
+                            <div class="dropzone-icon-wrap">📁</div>
+                            <h3 class="dropzone-title">Trage și plasează fișierul Excel sau CSV aici</h3>
+                            <p class="dropzone-subtitle">Accepts <strong>.xlsx</strong>, <strong>.xls</strong> and <strong>.csv</strong> files with ZKong product catalog prices</p>
+                            
+                            <div class="dropzone-badges">
+                                <span class="upload-pill">Format ZKONG Single Commodity</span>
+                                <span class="upload-pill highlight">Auto-Detecție /Litru & /Kg</span>
+                                <span class="upload-pill">Backup Automat Inclus</span>
+                                <span class="upload-pill">Max 30 MB</span>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-large" id="btn-select-file">
+                                <span>Alege Fișier de pe Disc</span>
+                            </button>
+                        </div>
+
+                        <!-- Upload Options -->
+                        <div class="upload-controls">
+                            <label class="toggle-switch-wrap" for="chk-auto-sync-zkong">
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="chk-auto-sync-zkong" checked>
+                                    <span class="slider-round"></span>
+                                </div>
+                                <span class="toggle-label">⚡ Sincronizează automat în ZKONG Cloud imediat după încărcare</span>
+                            </label>
+
+                            <button type="button" class="btn btn-outline" id="btn-view-backups-shortcut">
+                                <span>💾 Vezi Copii de Siguranță Anterioare</span>
+                            </button>
+                        </div>
+
+                        <!-- Progress Bar & Stages -->
+                        <div class="upload-progress-card" id="upload-progress-card">
+                            <div class="progress-header">
+                                <span class="progress-title">
+                                    <span class="spinner-icon">🔄</span>
+                                    <span id="progress-stage-name">Procesare fișier în curs...</span>
+                                </span>
+                                <span class="progress-percent" id="progress-percent-val">0%</span>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                            </div>
+                            <div class="progress-stages">
+                                <div class="stage-step" id="step-1"><span>1.</span> Validare fișier</div>
+                                <div class="stage-step" id="step-2"><span>2.</span> Backup de siguranță</div>
+                                <div class="stage-step" id="step-3"><span>3.</span> Calculare Preț/Litru & Kg</div>
+                                <div class="stage-step" id="step-4"><span>4.</span> Push ZKONG Cloud</div>
+                            </div>
+                        </div>
+
+                        <!-- Live Results Summary Card -->
+                        <div class="card glass" id="upload-results-card" style="display: none;">
+                            <div class="card-header" style="justify-content: space-between;">
+                                <h3>✓ Rezultat Procesare Fișier</h3>
+                                <span class="badge-pill" id="upload-result-status" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Finalizat cu succes</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="kpi-grid" style="margin-bottom: 20px;">
+                                    <div class="kpi-card glass" style="padding: 16px;">
+                                        <span class="kpi-label">Produse Extrase</span>
+                                        <h4 class="kpi-value" id="res-total-extracted" style="font-size: 24px;">0</h4>
+                                    </div>
+                                    <div class="kpi-card glass" style="padding: 16px;">
+                                        <span class="kpi-label">Soluții /Litru</span>
+                                        <h4 class="kpi-value" id="res-liquids-extracted" style="font-size: 24px; color: #38bdf8;">0</h4>
+                                    </div>
+                                    <div class="kpi-card glass" style="padding: 16px;">
+                                        <span class="kpi-label">Soluții /Kg</span>
+                                        <h4 class="kpi-value" id="res-solids-extracted" style="font-size: 24px; color: #f59e0b;">0</h4>
+                                    </div>
+                                    <div class="kpi-card glass" style="padding: 16px;">
+                                        <span class="kpi-label">Backup Creat</span>
+                                        <h4 class="kpi-value" id="res-backup-name" style="font-size: 13px; font-weight: 500; word-break: break-all;">-</h4>
+                                    </div>
+                                </div>
+
+                                <div id="res-zkong-sync-box" style="padding: 12px 16px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; margin-bottom: 16px;">
+                                    <span id="res-zkong-sync-text" style="font-size: 13px; color: #10b981; font-weight: 600;"></span>
+                                </div>
+
+                                <h4>Previzualizare primele produse din fișier:</h4>
+                                <div class="table-container glass" style="margin-top: 10px;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Cod Bară</th>
+                                                <th>Denumire Produs</th>
+                                                <th>Preț</th>
+                                                <th>Specificație</th>
+                                                <th>Preț Unitar (custFeature1)</th>
+                                                <th>Șablon</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="upload-preview-table-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: CATALOG PRODUSE ================= -->
+                <section class="tab-pane" id="tab-catalog">
+                    <div class="table-toolbar glass">
+                        <div class="toolbar-search">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="search-input" placeholder="Caută după nume produs, EAN/cod de bare sau SKU...">
+                        </div>
+                        <div class="toolbar-filters">
+                            <button class="btn btn-sm btn-primary" id="btn-catalog-create-product">
+                                <span>➕ Produs Nou</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline" id="btn-catalog-bind-tag" style="border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">
+                                <span>🏷️ Alocare ESL</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline" id="btn-catalog-pull-cloud" style="border-color: rgba(16, 185, 129, 0.5); color: #10b981;">
+                                <span>🔄 Sincronizează din ZKong</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline" id="btn-catalog-clean-names" style="border-color: rgba(168, 85, 247, 0.5); color: #c084fc;" title="Corectează automat diacriticele (ă, â, î, ș, ț) și greșelile gramaticale în toate denumirile">
+                                <span>✨ Corectează Diacritice & Gramatică</span>
+                            </button>
+                            <label class="filter-chip active" id="chip-filter-all" data-filter="all">
+                                <span>Toate (644)</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-liquids" data-filter="liquids">
+                                <span>💧 Lichide /Litru</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-solids" data-filter="solids">
+                                <span>⚖️ Solide /Kg</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-bound" data-filter="bound" style="border-color: rgba(16, 185, 129, 0.3);">
+                                <span>🏷️ Cu Etichetă (334)</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-unbound" data-filter="unbound" style="border-color: rgba(245, 158, 11, 0.3);">
+                                <span>⚠️ Nealocate</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-battery-low" data-filter="battery-low" style="border-color: rgba(239, 68, 68, 0.3);">
+                                <span>🪫 Baterie Scăzută</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-hardware" data-filter="hardware">
+                                <span>🔧 Hardware</span>
+                            </label>
+                            <label class="filter-chip" id="chip-filter-sales" data-filter="sales">
+                                <span>🔥 În Promoție</span>
+                            </label>
+                            <button class="btn btn-sm btn-secondary" id="btn-refresh-catalog">
+                                <span>🔄 Reîmprospătează</span>
+                            </button>
+
+                            <!-- In-line Quick Price Edit Toggle Switch -->
+                            <div class="inline-edit-toggle-wrap" style="margin-left: auto; display: flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.6); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.3);">
+                                <label class="toggle-switch-wrap" for="chk-inline-edit-mode" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="chk-inline-edit-mode">
+                                        <span class="slider-round"></span>
+                                    </div>
+                                    <span class="toggle-label" style="font-size: 12px; font-weight: 700; color: #38bdf8;">⚡ Editare Prețuri & /Litru în Tabel</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container glass">
+                        <table class="data-table" id="products-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">#</th>
+                                    <th>Cod Bară (EAN)</th>
+                                    <th>Denumire Produs</th>
+                                    <th>Preț Vânzare</th>
+                                    <th>Preț Tăiat</th>
+                                    <th>Volum / Spec</th>
+                                    <th>Preț Unitar (HG 947)</th>
+                                    <th>Șablon ESL</th>
+                                    <th>Etichetă ESL & Baterie</th>
+                                    <th width="140">Acțiuni Rapide</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <tr>
+                                    <td colspan="10" class="loading-td">Se încarcă produsele...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination-bar glass">
+                        <span class="pagination-info" id="pagination-info">Se afișează 0 - 0 din 0 produse</span>
+                        <div class="pagination-controls">
+                            <button class="btn btn-sm btn-secondary" id="btn-prev-page">← Pagina Anterioară</button>
+                            <span class="page-badge" id="current-page-num">1</span>
+                            <button class="btn btn-sm btn-secondary" id="btn-next-page">Pagina Următoare →</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: MOTOR LITRAJ & KG ================= -->
+                <section class="tab-pane" id="tab-litraj">
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h3>💧 Detalii Motor Inteligent Preț Unitar (HG 947/2000)</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="margin-bottom: 16px; color: var(--text-secondary);">
+                                Conform legislației din România (HG 947/2000), toate produsele vândute cu amănuntul trebuie să aibă indicat prețul pe unitatea de măsură (pe litru sau pe kilogram).
+                                The ZKong ESL Desktop Engine automatically computes unit prices per liter or kilogram, filtering hardware and accessories according to regulations (EU / HG 947).
+                            </p>
+                            
+                            <div class="kpi-grid" style="margin-bottom: 24px;">
+                                <div class="kpi-card glass">
+                                    <span class="kpi-label">Soluții Lichide Identificate</span>
+                                    <h4 class="kpi-value" id="engine-liquid-count" style="color: #38bdf8;">307</h4>
+                                    <span class="kpi-sub">Format: "X.XX Lei / Litru"</span>
+                                </div>
+                                <div class="kpi-card glass">
+                                    <span class="kpi-label">Soluții Solide Identificate</span>
+                                    <h4 class="kpi-value" id="engine-solid-count" style="color: #f59e0b;">35</h4>
+                                    <span class="kpi-sub">Format: "X.XX Lei / Kg"</span>
+                                </div>
+                                <div class="kpi-card glass">
+                                    <span class="kpi-label">Preț Mediu per Litru</span>
+                                    <h4 class="kpi-value" id="engine-avg-price">-- Lei/L</h4>
+                                    <span class="kpi-sub">Calculat pe soluții active</span>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-large" id="btn-engine-run-calc">
+                                <span>⚡ Rulează Recalcularea pentru Tot Catalogul</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: CALCULATOR INTELIGENT RAPID ================= -->
+                <section class="tab-pane" id="tab-calculator">
+                    <div class="card glass glow-cyan" style="max-width: 900px; margin: 0 auto;">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 28px;">🧮</span>
+                                <div>
+                                    <h3 style="margin: 0;">Calculator Inteligent Preț per Litru & Kilogram</h3>
+                                    <span style="font-size: 13px; color: var(--text-secondary);">Motor de calcul în timp real conform HG 947/2000 pentru etichetele electronice ZKONG 2.9"</span>
+                                </div>
+                            </div>
+                            <span class="badge-pill highlight">Live 2026 Engine</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-calc-grid" style="margin-bottom: 24px;">
+                                <div class="quick-calc-inputs">
+                                    <div class="form-group">
+                                        <label style="font-weight: 600; color: #94a3b8;">Text Liber (Scrie exact ce ai la îndemână):</label>
+                                        <input type="text" id="full-calc-raw" class="form-input" placeholder="ex: 160ron 250ml, 235ron 480ml, 135ron/6kg, 75ron/5l..." style="font-family: 'JetBrains Mono', monospace; font-size: 15px;">
+                                        <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">Recunoaște automat RON, Lei, ml, L, litri, kg, kilograme, grame!</span>
+                                    </div>
+                                    <div class="form-group-2">
+                                        <div class="form-group">
+                                            <label style="color: #94a3b8;">Preț Produs (Lei):</label>
+                                            <input type="number" step="0.01" id="full-calc-price" class="form-input" placeholder="ex: 160">
+                                        </div>
+                                        <div class="form-group">
+                                            <label style="color: #94a3b8;">Volum / Cantitate:</label>
+                                            <input type="text" id="full-calc-spec" class="form-input" placeholder="ex: 250ml sau 5L sau 6kg">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" id="btn-full-calc-run" style="width: 100%;">
+                                        <span>⚡ Calculează Prețul Unitar</span>
+                                    </button>
+                                </div>
+
+                                <div class="quick-calc-result-box" style="padding: 24px;">
+                                    <span class="calc-res-label">AFIȘAJ PE ETICHETA ESL (custFeature1):</span>
+                                    <div class="calc-res-value" id="full-calc-display" style="font-size: 34px;">-- Lei / Litru</div>
+                                    <div class="calc-res-formula" id="full-calc-formula" style="font-size: 14px;">Introdu un preț și o cantitate</div>
+                                    <div class="calc-res-actions">
+                                        <button class="btn btn-primary" id="btn-copy-full-calc">📋 Copiază Rezultatul</button>
+                                        <button class="btn btn-outline" id="btn-calc-to-studio">🏷️ Vezi pe Simulator 2.9"</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversion & Reference Cheatsheet -->
+                            <div class="card glass" style="background: rgba(15, 23, 42, 0.4); margin-top: 16px;">
+                                <div class="card-header">
+                                    <h4 style="margin: 0; font-size: 14px;">📐 Exemple Frecvente & Ghid de Conversie:</h4>
+                                </div>
+                                <div class="card-body" style="padding: 12px 18px;">
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 12px; color: #94a3b8;">
+                                        <div style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                                            <strong style="color: #38bdf8;">250 ml (0.25 L):</strong><br>
+                                            Preț × 4 = Preț / Litru<br>
+                                            <em>ex: 160 Lei → 640.00 Lei / Litru</em>
+                                        </div>
+                                        <div style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                                            <strong style="color: #38bdf8;">480 ml (0.48 L):</strong><br>
+                                            Preț ÷ 0.48 = Preț / Litru<br>
+                                            <em>ex: 235 Lei → 489.58 Lei / Litru</em>
+                                        </div>
+                                        <div style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                                            <strong style="color: #38bdf8;">750 ml (0.75 L):</strong><br>
+                                            Preț ÷ 0.75 = Preț / Litru<br>
+                                            <em>ex: 15 Lei → 20.00 Lei / Litru</em>
+                                        </div>
+                                        <div style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                                            <strong style="color: #f59e0b;">5 Litri / 6 Kg:</strong><br>
+                                            Preț ÷ 5 L (sau ÷ 6 Kg)<br>
+                                            <em>ex: 95 Lei / 5L → 19.00 Lei / Litru</em>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: MONITOR ETICHETE ACTIVE (334) ================= -->
+                <section class="tab-pane" id="tab-active-tags">
+                    <div class="active-tags-header card glass" style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                            <div>
+                                <h2 style="font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0 0 6px 0;">
+                                    <span>🏷️</span> Monitor Etichete ESL Active & Alocări ZKong
+                                    <span class="badge badge-success" id="badge-tags-active-live">334 ALOCATE</span>
+                                </h2>
+                                <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">
+                                    Telemetrie hardware în timp real ZKong Cloud (334 etichete E-Paper 2.9", stare baterii, semnal AP, produse asociate și prețuri unitare).
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button class="btn btn-primary" id="btn-check-zkong-watcher-now">
+                                    <span>⚡ Verifică Modificări ZKong Acum</span>
+                                </button>
+                                <button class="btn btn-secondary" id="btn-refresh-tags-live">
+                                    <span>🔄 Reîncarcă Etichete Live</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mini Telemetry Strip -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+                            <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.2);">
+                                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Etichete Active</div>
+                                <div style="font-size: 18px; font-weight: 800; color: #38bdf8; margin-top: 4px;" id="stat-tags-total">334 / 644 (51.9%)</div>
+                            </div>
+                            <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Sănătate Baterii ESL</div>
+                                <div style="font-size: 18px; font-weight: 800; color: #10b981; margin-top: 4px;" id="stat-tags-battery">98.4% Optim (3.01V)</div>
+                            </div>
+                            <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.2);">
+                                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Semnal AP ZKong (RSSI)</div>
+                                <div style="font-size: 18px; font-weight: 800; color: #c084fc; margin-top: 4px;" id="stat-tags-signal">-52 dBm (Excelent)</div>
+                            </div>
+                            <div style="background: rgba(15, 23, 42, 0.6); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Live Watcher ZKong</div>
+                                <div style="font-size: 18px; font-weight: 800; color: #f59e0b; margin-top: 4px;" id="stat-tags-watcher">Activ (30s)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar for Tags -->
+                    <div class="card glass" style="margin-bottom: 20px; padding: 14px 20px;">
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <div class="search-box" style="flex: 1; min-width: 280px;">
+                                <input type="text" id="tags-search-input" class="search-input" placeholder="🔍 Caută după Cod Etichetă, Denumire Produs, Cod Bare sau MAC...">
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <label class="filter-chip active" id="chip-tag-all" data-tag-filter="all"><span>Toate (334)</span></label>
+                                <label class="filter-chip" id="chip-tag-liquids" data-tag-filter="liquids"><span>💧 Lichide Alocate</span></label>
+                                <label class="filter-chip" id="chip-tag-solids" data-tag-filter="solids"><span>⚖️ Solide Alocate</span></label>
+                                <label class="filter-chip" id="chip-tag-battery-good" data-tag-filter="battery-good"><span>🔋 Baterie Bună (>80%)</span></label>
+                                <label class="filter-chip" id="chip-tag-battery-low" data-tag-filter="battery-low"><span>🪫 Baterie Sub 30%</span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table of Active Tags -->
+                    <div class="table-container glass">
+                        <table class="data-table" id="tags-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">#</th>
+                                    <th>Cod Etichetă (ESL)</th>
+                                    <th>Produs Alocat</th>
+                                    <th>Cod Bară</th>
+                                    <th>Preț Vânzare</th>
+                                    <th>Preț Unitar (HG 947)</th>
+                                    <th>Baterie</th>
+                                    <th>Semnal & AP</th>
+                                    <th>Ultimul Heartbeat</th>
+                                    <th width="120">Acțiuni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tags-table-body">
+                                <tr>
+                                    <td colspan="10" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                        Se încarcă lista de etichete active...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: SIMULATOR ESL STUDIO ================= -->
+                <section class="tab-pane" id="tab-esl-studio">
+                    <div class="studio-layout">
+                        <!-- Controls Panel -->
+                        <div class="studio-controls card glass">
+                            <h3>Simulare Etichetă Electronică 2.9"</h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                                Previzualizare grafică identică cu afișajul pe ecranul E-Paper fizic de 2.9 inch din magazin.
+                            </p>
+
+                            <div class="form-group">
+                                <label>Selectează un produs din catalog:</label>
+                                <select id="studio-product-select" class="form-select">
+                                    <option value="">Se încarcă lista de produse...</option>
+                                </select>
+                            </div>
+
+                            <div class="tag-specs-box">
+                                <div class="spec-row">
+                                    <span>Dimensiune ecran:</span>
+                                    <strong>2.9 inch (296 x 128 px)</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Tehnologie:</span>
+                                    <strong>E-Paper 3-Culori (Negru / Alb / Roșu)</strong>
+                                </div>
+                                <div class="spec-row">
+                                    <span>Șablon activ:</span>
+                                    <strong style="color: #10b981;">Template 2.9</strong>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" id="btn-push-selected-studio" style="margin-top: 16px; width: 100%;">
+                                <span>⚡ Trimite Acest Produs la Etichetă</span>
+                            </button>
+                        </div>
+
+                        <!-- Realistic Tag Mockup -->
+                        <div class="studio-display">
+                            <div class="physical-bezel">
+                                <div class="bezel-brand">ZKONG • ESL 2.9"</div>
+                                <div class="eink-screen" id="eink-tag-element">
+                                    <div class="eink-header">
+                                        <div class="eink-logo">ZKONG</div>
+                                        <div class="eink-promo-badge" id="eink-promo-badge">PROMOȚIE</div>
+                                    </div>
+
+                                    <div class="eink-body">
+                                        <h2 class="eink-title" id="eink-title">Selectează un produs</h2>
+                                        
+                                        <div class="eink-pricing-row">
+                                            <div class="eink-price-container">
+                                                <div class="eink-price" id="eink-price-val">0.00</div>
+                                                <div class="eink-currency">LEI</div>
+                                            </div>
+                                            
+                                            <div class="eink-old-box" id="eink-old-box" style="display: none;">
+                                                <span class="eink-old-lbl">PREȚ VECHI</span>
+                                                <span class="eink-old-val" id="eink-old-val">0.00</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="eink-footer-row">
+                                            <div class="eink-ppl-badge" id="eink-ppl-val">-- Lei / Litru</div>
+                                            <div class="eink-barcode-box">
+                                                <div class="eink-barcode-bars">||| ||||||| |||| |||||</div>
+                                                <div class="eink-barcode-text" id="eink-barcode-text">5940000000000</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: SINCRONIZARE ZKONG ================= -->
+                <section class="tab-pane" id="tab-sync">
+                    <div class="sync-grid">
+                        <div class="card glass">
+                            <div class="card-header">
+                                <h3>☁️ Sincronizare Directă ZKONG Cloud EU</h3>
+                            </div>
+                            <div class="card-body">
+                                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                    Trimite întreg catalogul prin API-ul REST securizat cu criptare RSA către serverul central ZKONG din Europa (<code>esl-eu.zkong.com:9999</code>).
+                                </p>
+                                <button class="btn btn-primary btn-large" id="btn-sync-cloud-full">
+                                    <span>⚡ Declanșează Sincronizarea în ZKONG Cloud</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <div class="card-header">
+                                <h3>🖥️ Sincronizare Middleware Local (Port 8003)</h3>
+                            </div>
+                            <div class="card-body">
+                                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                    Actualizează fișierul principal Excel de pe disc și notifică baza de date SQLite locală (<code>tool1.6.0/tool.db</code>) pentru importul automat de fundal.
+                                </p>
+                                <button class="btn btn-secondary btn-large" id="btn-sync-mw-full">
+                                    <span>🔄 Actualizează Fișierul Excel Local</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Terminal Logs -->
+                    <div class="terminal-card glass" style="margin-top: 24px;">
+                        <div class="terminal-header">
+                            <div class="terminal-title">
+                                <span class="term-dot red"></span>
+                                <span class="term-dot yellow"></span>
+                                <span class="term-dot green"></span>
+                                <span>Jurnal Operațiuni & Sincronizare în Timp Real</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline" id="btn-clear-logs">Șterge Jurnalul</button>
+                        </div>
+                        <div class="terminal-body" id="terminal-logs-content">
+                            <div class="log-line info">[Sistem] Platforma ZKONG ESL Pro (PHP 8.2 + ZKong Cloud) a fost inițializată.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: ISTORIC & BACKUPS ================= -->
+                <section class="tab-pane" id="tab-backups">
+                    <div class="card glass">
+                        <div class="card-header" style="justify-content: space-between;">
+                            <h3>💾 Copii de Siguranță Automate (Excel Backups)</h3>
+                            <button class="btn btn-sm btn-secondary" id="btn-refresh-backups">🔄 Reîmprospătează Lista</button>
+                        </div>
+                        <div class="card-body">
+                            <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                                La fiecare încărcare de fișier pe platformă, sistemul generează automat o copie completă în folderul <code>backups/</code> pentru prevenirea pierderii accidentale de date.
+                            </p>
+
+                            <div class="table-container glass">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nume Fișier Backup</th>
+                                            <th>Data & Ora Creării</th>
+                                            <th>Mărime Fișier</th>
+                                            <th>Stare</th>
+                                            <th width="140">Acțiune</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="backups-table-body">
+                                        <tr>
+                                            <td colspan="4" class="loading-td">Se încarcă lista de copii de siguranță...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= TAB: SETĂRI CONEXIUNI ================= -->
+                <section class="tab-pane" id="tab-settings">
+                    <div class="card glass" style="max-width: 800px;">
+                        <div class="card-header">
+                            <h3>⚙️ Setări Conexiuni & Parametri Magazin</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="settings-form">
+                                <div class="form-group">
+                                    <label>URL Middleware Local (Port 8003):</label>
+                                    <input type="text" id="cfg-mw-url" value="http://127.0.0.1:8003" class="form-input">
+                                </div>
+
+                                <div class="form-group-2">
+                                    <div class="form-group">
+                                        <label>Utilizator Middleware:</label>
+                                        <input type="text" id="cfg-mw-user" value="admin" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>ID Magazin (Store ID):</label>
+                                        <input type="text" id="cfg-store-id" value="1749214564196" class="form-input">
+                                    </div>
+                                </div>
+
+                                <div class="form-group-2">
+                                    <div class="form-group">
+                                        <label>URL ZKONG Cloud EU:</label>
+                                        <input type="text" id="cfg-cloud-url" value="http://esl-eu.zkong.com:9999" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label data-i18n="cfgCloudUser">ZKong Cloud Account:</label>
+                                        <input type="text" id="cfg-cloud-user" value="" placeholder="e.g. merchant_admin" class="form-input">
+                                    </div>
+                                </div>
+
+                                <div class="form-group-2">
+                                    <div class="form-group">
+                                        <label>Șablon ESL Implicit:</label>
+                                        <input type="text" id="cfg-template-type" value="2.9" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Categorie Șablon Implicită:</label>
+                                        <input type="text" id="cfg-template-cat" value="default" class="form-input">
+                                    </div>
+                                </div>
+
+                                <div class="settings-actions" style="margin-top: 24px; display: flex; gap: 12px;">
+                                    <button type="submit" class="btn btn-primary" id="btn-save-settings">
+                                        <span>💾 Salvează Setările</span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline" id="btn-test-cloud">
+                                        <span>⚡ Testează Conexiunea ZKONG Cloud</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal-box glass">
+            <div class="modal-header">
+                <h3>✏️ Editare Rapidă Produs</h3>
+                <button class="modal-close" id="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal-pid">
+                
+                <div class="form-group">
+                    <label>Denumire Produs:</label>
+                    <input type="text" id="modal-name" class="form-input">
+                </div>
+
+                <div class="form-group-2">
+                    <div class="form-group">
+                        <label>Cod de Bare (EAN):</label>
+                        <input type="text" id="modal-barcode" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Specificație / Volum:</label>
+                        <input type="text" id="modal-spec" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group-2">
+                    <div class="form-group">
+                        <label>Preț Vânzare (Lei):</label>
+                        <input type="number" step="0.01" id="modal-price" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Preț Tăiat / Vechi (Lei):</label>
+                        <input type="number" step="0.01" id="modal-orig-price" class="form-input">
+                    </div>
+                </div>
+
+                <div class="modal-preview-box">
+                    <span class="preview-lbl">Preț Unitar Calculat Automat (custFeature1):</span>
+                    <span class="preview-val" id="modal-calc-ppl">--</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modal-cancel-btn">Anulează</button>
+                <button class="btn btn-primary" id="modal-save-btn">Salvează Modificările</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Product Modal -->
+    <div class="modal-overlay" id="create-product-modal">
+        <div class="modal-box glass" style="max-width: 640px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">➕</span>
+                    <div>
+                        <h3 style="margin: 0;">Adăugare Produs Nou în Catalog</h3>
+                        <span style="font-size: 12px; color: var(--text-secondary);">Calcul autonom /litru sau /kg și sincronizare directă cu eticheta electronică ZKONG</span>
+                    </div>
+                </div>
+                <button class="modal-close" id="create-modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-product-form">
+                    <div class="form-group-2">
+                        <div class="form-group">
+                            <label>Cod de Bare (EAN): <span style="color: #ef4444;">*</span></label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="new-prod-barcode" class="form-input" placeholder="ex: 5940000000001" required style="font-family: 'JetBrains Mono', monospace;">
+                                <button type="button" class="btn btn-sm btn-secondary" id="btn-gen-ean" title="Generează un cod EAN-13 valid">🎲 EAN</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Unitate de Măsură Vanzare:</label>
+                            <select id="new-prod-unit" class="form-select">
+                                <option value="buc">Bucată (buc)</option>
+                                <option value="litru">Litru (L)</option>
+                                <option value="kg">Kilogram (kg)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Denumire Produs: <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="new-prod-name" class="form-input" placeholder="ex: Detergent Pardoseli SuperClean 750ml" required>
+                    </div>
+
+                    <div class="form-group-3" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label>Preț Vânzare (Lei): <span style="color: #ef4444;">*</span></label>
+                            <input type="number" step="0.01" id="new-prod-price" class="form-input" placeholder="ex: 20.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Preț Vechi / Tăiat (Lei):</label>
+                            <input type="number" step="0.01" id="new-prod-orig-price" class="form-input" placeholder="ex: 25.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Volum / Specificație:</label>
+                            <input type="text" id="new-prod-spec" class="form-input" placeholder="ex: 750ml, 5L, 6kg">
+                        </div>
+                    </div>
+
+                    <!-- Live calculation feedback card -->
+                    <div class="quick-calc-result-box" style="padding: 16px; margin: 16px 0; border-radius: 10px;">
+                        <span class="calc-res-label" style="font-size: 11px;">PREȚ UNITAR CALCULAT PENTRU ETICHETA 2.9" (HG 947/2000):</span>
+                        <div class="calc-res-value" id="new-prod-ppl-preview" style="font-size: 24px; margin: 6px 0;">-- Lei / Litru</div>
+                        <div class="calc-res-formula" id="new-prod-formula-preview" style="font-size: 12px;">Completează prețul și specificația pentru calcul automat</div>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                        <label class="toggle-switch-wrap" style="cursor: pointer; margin-bottom: 8px;">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="new-prod-sync-zkong" checked>
+                                <span class="slider-round"></span>
+                            </div>
+                            <span class="toggle-label" style="font-size: 13px; font-weight: 600; color: #10b981;">⚡ Trimite imediat în ZKONG Cloud EU (Template 2.9)</span>
+                        </label>
+                        <div style="font-size: 11px; color: #64748b; padding-left: 54px;">
+                            Va actualiza automat atât catalogul de produse, fișierul Single_ana.xlsx, cât și etichetele ZKONG.
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="create-modal-cancel-btn">Anulează</button>
+                <button type="button" class="btn btn-primary" id="create-modal-submit-btn">
+                    <span>💾 Înregistrează și Salvează Produsul</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bind ESL Tag Modal -->
+    <div class="modal-overlay" id="bind-tag-modal">
+        <div class="modal-box glass" style="max-width: 580px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🏷️</span>
+                    <div>
+                        <h3 style="margin: 0;">Alocare Etichetă Electronică ESL ZKONG</h3>
+                        <span style="font-size: 12px; color: var(--text-secondary);">Asociere în timp real prin API ZKong Cloud (esl-eu.zkong.com:9999)</span>
+                    </div>
+                </div>
+                <button class="modal-close" id="bind-modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="bind-tag-form">
+                    <div class="form-group">
+                        <label>Cod de Bare Produs (EAN): <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="bind-input-barcode" class="form-input" placeholder="Scanează sau introdu codul de bare al produsului..." required style="font-family: 'JetBrains Mono', monospace; font-size: 15px;">
+                        <div id="bind-prod-info" style="font-size: 12px; color: #38bdf8; margin-top: 4px; display: none;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cod de Bare / MAC Etichetă ESL: <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="bind-input-tag" class="form-input" placeholder="Scanează codul de pe eticheta fizică ESL (ex: 01A2B3C4)..." required style="font-family: 'JetBrains Mono', monospace; font-size: 15px;">
+                        <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">Codul este tipărit pe eticheta electronică ZKONG de 2.9 inch sub codul de bare fizic.</span>
+                    </div>
+
+                    <!-- Live Server Feedback Banner -->
+                    <div id="bind-feedback-box" style="display: none; padding: 14px; border-radius: 8px; margin: 16px 0; font-size: 13px;">
+                        <span id="bind-feedback-text"></span>
+                    </div>
+
+                    <div class="tag-specs-box" style="margin-top: 12px;">
+                        <div class="spec-row">
+                            <span>Metodă Cloud:</span>
+                            <strong style="color: #38bdf8;">POST /bind/bindItemPriceTag</strong>
+                        </div>
+                        <div class="spec-row">
+                            <span>ID Magazin (Store):</span>
+                            <strong>1749214564196</strong>
+                        </div>
+                        <div class="spec-row">
+                            <span>Șablon Activ:</span>
+                            <strong style="color: #10b981;">Template 2.9 (attrName 2.9)</strong>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button type="button" class="btn btn-outline" id="btn-unbind-submit" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
+                    <span>❌ Dezasociază Eticheta</span>
+                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" id="bind-modal-cancel-btn">Închide</button>
+                    <button type="button" class="btn btn-primary" id="btn-bind-submit">
+                        <span>🔗 Alocă Eticheta în ZKONG</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2026 Command Palette Spotlight Modal (Ctrl + K) -->
+    <div class="command-palette-overlay" id="cmd-palette-modal">
+        <div class="command-palette-box glass">
+            <div class="cmd-palette-header">
+                <span class="cmd-palette-search-icon">🔍</span>
+                <input type="text" id="cmd-palette-input" placeholder="Caută instant produs, cod bare, acțiune (ex: 12405, detartrant, sync)..." autocomplete="off">
+                <span class="cmd-palette-kbd-esc" id="cmd-palette-close-btn">ESC</span>
+            </div>
+            <div class="cmd-palette-quick-actions">
+                <button type="button" class="cmd-action-tag" data-cmd="action-pull-cloud">🔄 Sincronizare ZKong</button>
+                <button type="button" class="cmd-action-tag" data-cmd="action-clean-names">✨ Corectează Diacritice</button>
+                <button type="button" class="cmd-action-tag" data-cmd="action-new-product">➕ Produs Nou</button>
+                <button type="button" class="cmd-action-tag" data-cmd="action-export-excel">📥 Export Excel</button>
+                <button type="button" class="cmd-action-tag" data-cmd="action-open-calc">🧮 Calculator HG 947</button>
+            </div>
+            <div class="cmd-palette-results" id="cmd-palette-results">
+                <!-- Dynamically populated -->
+            </div>
+            <div class="cmd-palette-footer">
+                <span>Type to search • <strong>Enter</strong> to select • <strong>ESC</strong> to close</span>
+                <span style="color: var(--brand-cyan); font-weight: 700;">ZKong Desktop Platform • by Nazjar Dev</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZKong Cloud Production Authentication Modal -->
+    <div class="modal-backdrop" id="modal-zkong-login" style="display: none;">
+        <div class="modal-card modal-login-card glass">
+            <div class="login-header">
+                <div class="login-logo-glow">
+                    <img src="/logo.png" alt="Zkong Desktop Logo" class="login-logo-img">
+                </div>
+                <h2 class="login-title" data-i18n="loginTitle">Zkong Desktop Application</h2>
+                <p class="login-subtitle"><span data-i18n="loginSubtitle">Unofficial Desktop Platform</span> • <strong style="color: var(--brand-cyan);">by Nazjar Dev</strong></p>
+            </div>
+            
+            <div class="login-desc-box">
+                <p data-i18n="loginDesc">Connect with your official ZKong Cloud credentials. Compatible with any store and region (EU, US, China, Custom).</p>
+            </div>
+
+            <form id="form-zkong-login" class="login-form">
+                <div class="form-group">
+                    <label for="login-server-region" class="form-label">
+                        <span data-i18n="loginRegion">ZKong Cloud Server Region</span>
+                    </label>
+                    <select id="login-server-region" class="form-input">
+                        <option value="http://esl-eu.zkong.com:9999" selected>🇪🇺 Europe (esl-eu.zkong.com:9999)</option>
+                        <option value="http://esl-us.zkong.com:9999">🇺🇸 United States (esl-us.zkong.com:9999)</option>
+                        <option value="http://esl.zkong.com:9999">🇨🇳 China / Asia (esl.zkong.com:9999)</option>
+                        <option value="custom">⚙️ Custom Server URL...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="login-custom-url-group" style="display: none;">
+                    <label for="login-custom-url" class="form-label">
+                        <span data-i18n="loginCustomUrl">Custom Server Endpoint</span>
+                    </label>
+                    <input type="text" id="login-custom-url" class="form-input" placeholder="http://192.168.1.100:9999">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-account" class="form-label">
+                        <span data-i18n="loginAccount">Account / Email / Username</span>
+                    </label>
+                    <input type="text" id="login-account" class="form-input" placeholder="e.g. your_zkong_user" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-label">
+                        <span data-i18n="loginPassword">Password</span>
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+                        <button type="button" class="btn-pwd-eye" id="btn-toggle-login-pwd" title="Show / Hide Password">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-store-id" class="form-label">
+                        <span data-i18n="loginStoreId">Store ID (Optional - auto-detected if empty)</span>
+                    </label>
+                    <input type="text" id="login-store-id" class="form-input" placeholder="e.g. 1749214564196 or leave blank">
+                </div>
+
+                <div id="login-alert-box" class="login-alert" style="display: none;"></div>
+
+                <div class="login-actions">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-submit-zkong-login">
+                        <span class="icon">🚀</span>
+                        <span data-i18n="loginBtnConnect">Connect & Sync Products</span>
+                    </button>
+                </div>
+                
+                <div class="login-footer-meta">
+                    <span data-i18n="loginFooterMeta">🔒 End-to-End RSA Encrypted Authentication</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="/app.js"></script>
+</body>
+</html>
